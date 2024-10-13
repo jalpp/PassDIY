@@ -44,11 +44,9 @@ you can now clone the repo and run from source
 
 can also build PassDIY with build command and run passdiy
 
-`go build
+`go build`
 
-./passdiy
-
-`
+`./passdiy`
 
 
 
