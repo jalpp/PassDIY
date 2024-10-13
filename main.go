@@ -158,7 +158,7 @@ func (m model) View() string {
 			))
 		}
 		return style.GreenStyle.Render(fmt.Sprintf(
-			"Enter the token for hashingand press Enter:\n\n%s\n\n",
+			"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
 			maskedInput,
 		))
 	}
