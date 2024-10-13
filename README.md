@@ -13,7 +13,7 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - Ability to generate 5 multiple secrets at once and pick 100 and 10000 password generation algorithms
 - Ability to hash tokens/passwords with Argon2id 
 - Ability to salt tokens/passwords
-- Ability to copy to clipboard passwords
+- Ability to copy passwords to clipboard 
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
 - Simple to use TUI so you don't forget sub commands and what password you were trying to store
 
