@@ -2,12 +2,14 @@ package cmds
 
 import (
 	"math/rand"
+
+	config "github.com/jalpp/passdiy/config"
 )
 
 func GetMul(picker string) string {
 	var buffer string
 
-	for i := 0; i <= 5; i++ {
+	for i := 0; i <= config.MULTIPLE_VALUE_COUNT; i++ {
 		switch picker {
 		case "pass":
 			buffer += GetStrongPassword() + "\n"
@@ -24,7 +26,7 @@ func GetMul(picker string) string {
 }
 
 func GetHundPick(picker string) string {
-	var lotteryWheel [100]string
+	var lotteryWheel [config.LOTTERY_WHEEL_COUNT]string
 
 	for i := range lotteryWheel {
 		switch picker {
@@ -37,12 +39,12 @@ func GetHundPick(picker string) string {
 		}
 	}
 
-	return lotteryWheel[rand.Intn(100)]
+	return lotteryWheel[rand.Intn(config.LOTTERY_WHEEL_COUNT)]
 }
 
 func GetTenKPick(picker string) string {
 
-	var outterlotteryWheel [100]string
+	var outterlotteryWheel [config.LOTTERY_WHEEL_COUNT]string
 
 	for i := range outterlotteryWheel {
 		switch picker {
@@ -55,5 +57,5 @@ func GetTenKPick(picker string) string {
 		}
 	}
 
-	return outterlotteryWheel[rand.Intn(100)]
+	return outterlotteryWheel[rand.Intn(config.LOTTERY_WHEEL_COUNT)]
 }

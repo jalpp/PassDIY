@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/jalpp/passdiy/config"
 	hcp "github.com/jalpp/passdiy/hcpvault"
 	cmd "github.com/jalpp/passdiy/password"
 )
@@ -15,12 +16,12 @@ type CommandItem struct {
 	title, desc string
 }
 
-const (
-	passDesc            = "strong password"
-	tokenDesc           = "strong API token"
-	pinDesc             = "strong 6-digit pin"
-	pwpDesc             = "strong passphrase"
-	saltDesc            = "password with extra salt on top"
+var (
+	passDesc            = fmt.Sprintf("strong %d-char password", config.PASWORD_CHAR_LENGTH)
+	tokenDesc           = fmt.Sprintf("strong %d-char API token", config.API_TOKEN_CHAR_LENGTH)
+	pinDesc             = fmt.Sprintf("strong %d-digit pin", config.PIN_DIGIT_LENGTH)
+	pwpDesc             = fmt.Sprintf("strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
+	saltDesc            = fmt.Sprintf("password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
 	hashDesc            = "hash value of a password with Argon2id"
 	directDesc          = "direct hash running buffer value with Argon2id"
 	hcpvaultstoreDesc   = "Store a new secret to Hashicop Vault"
@@ -36,31 +37,32 @@ func GetSingleCommandInfo(cmd string) string {
 }
 
 func GetMulCommandInfo(cmd string) string {
-	return fmt.Sprintf("Generate 5 multiple %s all at once", cmd)
+	return fmt.Sprintf("Generate %d multiple %s all at once", config.MULTIPLE_VALUE_COUNT, cmd)
 }
 
 func GetHundCommandInfo(cmd string) string {
-	return fmt.Sprintf("Generate a single %s by generating 100s random %s and randomly picking one", cmd, cmd)
+	return fmt.Sprintf("Generate a single %s by generating 100s and randomly picking one", cmd)
 }
 
 func GetTenKCommandInfo(cmd string) string {
-	return fmt.Sprintf("Generate a single %s by generating 10000s random %s and randomly picking one", cmd, cmd)
+	return fmt.Sprintf("Generate a single %s by generating 10000s and randomly picking one", cmd)
 }
 
 func CreateCommandItems() []list.Item {
+	const config = config.LOTTERY_WHEEL_COUNT
 	return []list.Item{
 		CommandItem{title: "pass", desc: GetSingleCommandInfo(passDesc)},
-		CommandItem{title: "passmmul", desc: GetMulCommandInfo(passDesc)},
-		CommandItem{title: "pass100", desc: GetHundCommandInfo(passDesc)},
-		CommandItem{title: "pass10000", desc: GetTenKCommandInfo(passDesc)},
+		CommandItem{title: "passmul", desc: GetMulCommandInfo(passDesc)},
+		CommandItem{title: fmt.Sprintf("pass%d", config), desc: GetHundCommandInfo(passDesc)},
+		CommandItem{title: fmt.Sprintf("pass%d", (config * config)), desc: GetTenKCommandInfo(passDesc)},
 		CommandItem{title: "token", desc: GetSingleCommandInfo(tokenDesc)},
 		CommandItem{title: "tokenmul", desc: GetMulCommandInfo(tokenDesc)},
-		CommandItem{title: "token100", desc: GetHundCommandInfo(tokenDesc)},
-		CommandItem{title: "token10000", desc: GetTenKCommandInfo(tokenDesc)},
+		CommandItem{title: fmt.Sprintf("token%d", config), desc: GetHundCommandInfo(tokenDesc)},
+		CommandItem{title: fmt.Sprintf("token%d", config*config), desc: GetTenKCommandInfo(tokenDesc)},
 		CommandItem{title: "pin", desc: GetSingleCommandInfo(pinDesc)},
 		CommandItem{title: "pinmul", desc: GetMulCommandInfo(pinDesc)},
-		CommandItem{title: "pin100", desc: GetHundCommandInfo(pinDesc)},
-		CommandItem{title: "pin10000", desc: GetTenKCommandInfo(pinDesc)},
+		CommandItem{title: fmt.Sprintf("pin%d", config), desc: GetHundCommandInfo(pinDesc)},
+		CommandItem{title: fmt.Sprintf("pin%d", config*config), desc: GetTenKCommandInfo(pinDesc)},
 		CommandItem{title: "pwp", desc: GetSingleCommandInfo(pwpDesc)},
 		CommandItem{title: "salt", desc: GetSingleCommandInfo(saltDesc)},
 		CommandItem{title: "hash", desc: GetSingleCommandInfo(hashDesc)},
@@ -85,30 +87,31 @@ func ExecuteCommand(command, input string) tea.Cmd {
 }
 
 func HandleCommand(input, userInput string) string {
+	const config = config.LOTTERY_WHEEL_COUNT
 	switch strings.TrimSpace(input) {
 	case "pass":
 		return cmd.GetStrongPassword()
 	case "passmul":
 		return cmd.GetMul("pass")
-	case "pass100":
+	case fmt.Sprintf("pass%d", config):
 		return cmd.GetHundPick("pass")
-	case "pass10000":
+	case fmt.Sprintf("pass%d", (config * config)):
 		return cmd.GetTenKPick("pass")
 	case "token":
 		return cmd.GetAPIToken()
 	case "tokenmul":
 		return cmd.GetMul("token")
-	case "token100":
+	case fmt.Sprintf("token%d", config):
 		return cmd.GetHundPick("token")
-	case "token10000":
+	case fmt.Sprintf("token%d", config*config):
 		return cmd.GetTenKPick("token")
 	case "pin":
 		return cmd.GetPin()
 	case "pinmul":
 		return cmd.GetMul("pin")
-	case "pin100":
+	case fmt.Sprintf("pin%d", config):
 		return cmd.GetHundPick("pin")
-	case "pin10000":
+	case fmt.Sprintf("pin%d", config*config):
 		return cmd.GetTenKPick("pin")
 	case "pwp":
 		return cmd.GetPwp()
