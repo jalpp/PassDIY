@@ -151,14 +151,14 @@ func (m model) View() string {
 	if m.showInput {
 		maskedInput := cmd.CoverUp(m.textInput.Value())
 
-		if m.inputMode == "tfvaultstore" {
+		if m.inputMode == "hcpvaultstore" {
 			return style.GreenStyle.Render(fmt.Sprintf(
 				"Enter the token in 'name=value' format and press Enter:\n\n%s\n\n",
 				maskedInput,
 			))
 		}
 		return style.GreenStyle.Render(fmt.Sprintf(
-			"Enter the input for hashing and press Enter:\n\n%s\n\n",
+			"Enter the token for hashingand press Enter:\n\n%s\n\n",
 			maskedInput,
 		))
 	}
