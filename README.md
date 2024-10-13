@@ -42,9 +42,14 @@ you can now clone the repo and run from source
 
 `go run main.go`
 
-can also build PassDIY with build command
+can also build PassDIY with build command and run passdiy
 
-`go build`
+`go build
+
+./passdiy
+
+`
+
 
 
 ## Acknowledgements

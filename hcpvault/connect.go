@@ -70,14 +70,14 @@ func Connect() string {
 
 	if clientID == "" || clientSecret == "" {
 
-		return "Please set HCP_CLIENT_ID and HCP_CLIENT_SECRET in environment variables"
+		return "Please set the following ENV variable HCP_CLIENT_ID and HCP_CLIENT_SECRET values"
 	}
 
 	token, err := getHCPAPIToken(clientID, clientSecret)
 
 	if err != nil {
 
-		return "Error retrieving HCP API token"
+		return "Please check your ENV variables! Error retrieving HCP API token"
 	}
 
 	os.Setenv("HCP_API_TOKEN", token)

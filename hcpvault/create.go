@@ -66,7 +66,7 @@ func Create(name, value string) string {
 	token := os.Getenv("HCP_API_TOKEN")
 
 	if orgID == "" || projectID == "" || appName == "" || token == "" {
-		return "Please set HCP_ORG_ID HCP_PROJECT_ID HCP_APP_NAME HCP_API_TOKEN"
+		return "Please set the following ENV variables HCP_ORG_ID HCP_PROJECT_ID HCP_APP_NAME HCP_API_TOKEN values"
 	}
 
 	if err := createAppKVSecret(orgID, projectID, appName, name, value, token); err != nil {
