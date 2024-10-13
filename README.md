@@ -1,7 +1,7 @@
 
 # PassDIY
 
-A personal password/token manager TUI for develoeprs to generate various types of hash/salted secrets and store them in cloud based Hashicorp Vault
+A personal password/token manager TUI for developers to generate various types of hash/salted secrets and store them in their cloud-based Hashicorp Vault
 
 ## Why PassDIY?
 
