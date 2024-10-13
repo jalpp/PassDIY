@@ -19,8 +19,7 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 ## Demo
 
-Insert gif or link to demo
-
+![passdiydemo](https://github.com/user-attachments/assets/79e1d0ce-614f-45dd-a5d9-6143ffac259f)
 
 ## Setup
 
