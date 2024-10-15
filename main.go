@@ -168,11 +168,11 @@ func (m model) View() string {
 		copyMessage = style.GreenStyle.Render("\n📋 Buffer value copied to clipboard!")
 	}
 
-	if strings.Contains(strings.ToLower(m.output), "please") {
+	if strings.Contains(strings.ToLower(m.output), "please") || strings.Contains(strings.ToLower(m.output), "error") {
 		return style.ErrorStyle.Render(fmt.Sprintf("%s\n\n ❌ Error: %s", m.list.View(), m.output))
 	}
 
-	if strings.Contains(strings.ToLower(m.output), "authentication is required") {
+	if strings.Contains(strings.ToLower(m.output), "authentication is required") || strings.Contains(strings.ToLower(m.output), "Unauthorized") {
 		return style.ErrorStyle.Render(fmt.Sprintf("%s\n\n ❌ Error: %s", m.list.View(), "HCP_API_TOKEN expired, please run hcpvaultconnect to re connect to HCP Vault"))
 	}
 

@@ -26,6 +26,7 @@ var (
 	directDesc          = "direct hash running buffer value with Argon2id"
 	hcpvaultstoreDesc   = "Store a new secret to Hashicop Vault"
 	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicop Vault"
+	hcpvaultlistDesc    = "List HCP Vault secrets log details"
 )
 
 func (i CommandItem) Title() string       { return i.title }
@@ -69,6 +70,7 @@ func CreateCommandItems() []list.Item {
 		CommandItem{title: "directhash", desc: GetSingleCommandInfo(directDesc)},
 		CommandItem{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
 		CommandItem{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
+		CommandItem{title: "hcpvaultlist", desc: hcpvaultlistDesc},
 	}
 }
 
@@ -119,6 +121,8 @@ func HandleCommand(input, userInput string) string {
 		return cmd.AddSalt(userInput)
 	case "hash":
 		return cmd.HashFunc(userInput)
+	case "directhash":
+		return cmd.HashFunc(userInput)
 	case "hcpvaultstore":
 		parts := strings.SplitN(userInput, "=", 2)
 		if len(parts) == 2 {
@@ -127,10 +131,14 @@ func HandleCommand(input, userInput string) string {
 			return hcp.Create(name, value)
 		}
 		return "Invalid format. Use 'name=value'."
-	case "directhash":
-		return cmd.HashFunc(userInput)
 	case "hcpvaultconnect":
 		return hcp.Connect()
+	case "hcpvaultlist":
+		var list string = hcp.List()
+		if strings.Contains(list, "Unauthorized") {
+			return "Please connect to Hashicorp vault via hcpvaultconnect"
+		}
+		return list
 	default:
 		return fmt.Sprintf("Unknown command: %s", input)
 	}

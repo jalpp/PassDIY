@@ -10,12 +10,16 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 ## Features
 
 - Generation of strong secrets like pins, passwords, API tokens, passphrases 
-- Ability to generate 5 multiple secrets at once and pick 100 and 10000 password generation algorithms
-- Ability to hash tokens/passwords with Argon2id 
-- Ability to salt tokens/passwords
-- Ability to copy passwords to clipboard 
+- Generate X multiple secrets at once and pick X and X password generation algorithms
+- Hash tokens/passwords with Argon2id 
+- Salt tokens/passwords
+- Copy passwords to clipboard 
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
-- Simple to use TUI so you don't forget sub commands and what password you were trying to store
+
+## Hashicorp Vault Commands
+- hcpvaultconnect automatically connect to hcp vault via service principle
+- hcpvaultstore store secrets into the vault via name=value format
+- hcpvaultlist list log details about token created at, created by details
 
 ## Demo
 
