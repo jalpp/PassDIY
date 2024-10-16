@@ -23,7 +23,8 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 ## Demo
 
-![passdiydemo2 (1)](https://github.com/user-attachments/assets/a69792c6-d24d-4659-b478-9f9aa32e071d)
+![passdiydemo3](https://github.com/user-attachments/assets/b17a0164-9dcd-491f-9a6d-29c48f6d8e82)
+
 
 ## Setup
 
