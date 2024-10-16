@@ -14,6 +14,7 @@ import (
 
 type CommandItem struct {
 	title, desc string
+	Subcmd      []CommandItem
 }
 
 var (
@@ -51,23 +52,35 @@ func GetTenKCommandInfo(cmd string) string {
 
 func CreateCommandItems() []list.Item {
 	const config = config.LOTTERY_WHEEL_COUNT
+
+	passItems := []CommandItem{
+		{title: "pass", desc: GetSingleCommandInfo("strong password")},
+		{title: "passmul", desc: GetMulCommandInfo("password")},
+		{title: fmt.Sprintf("pass%d", config), desc: GetHundCommandInfo("password")},
+		{title: fmt.Sprintf("pass%d", config*config), desc: GetTenKCommandInfo("password")},
+	}
+
+	pinItems := []CommandItem{
+		{title: "pin", desc: GetSingleCommandInfo("pin")},
+		{title: "pinmul", desc: GetMulCommandInfo("pin")},
+		{title: fmt.Sprintf("pin%d", config), desc: GetHundCommandInfo("pin")},
+		{title: fmt.Sprintf("pin%d", config*config), desc: GetTenKCommandInfo("pin")},
+	}
+
+	tokenItems := []CommandItem{
+		{title: "token", desc: GetSingleCommandInfo("token")},
+		{title: "tokenmul", desc: GetMulCommandInfo("token")},
+		{title: fmt.Sprintf("token%d", config), desc: GetHundCommandInfo("token")},
+		{title: fmt.Sprintf("token%d", config*config), desc: GetTenKCommandInfo("token")},
+	}
+
 	return []list.Item{
-		CommandItem{title: "pass", desc: GetSingleCommandInfo(passDesc)},
-		CommandItem{title: "passmul", desc: GetMulCommandInfo(passDesc)},
-		CommandItem{title: fmt.Sprintf("pass%d", config), desc: GetHundCommandInfo(passDesc)},
-		CommandItem{title: fmt.Sprintf("pass%d", (config * config)), desc: GetTenKCommandInfo(passDesc)},
-		CommandItem{title: "token", desc: GetSingleCommandInfo(tokenDesc)},
-		CommandItem{title: "tokenmul", desc: GetMulCommandInfo(tokenDesc)},
-		CommandItem{title: fmt.Sprintf("token%d", config), desc: GetHundCommandInfo(tokenDesc)},
-		CommandItem{title: fmt.Sprintf("token%d", config*config), desc: GetTenKCommandInfo(tokenDesc)},
-		CommandItem{title: "pin", desc: GetSingleCommandInfo(pinDesc)},
-		CommandItem{title: "pinmul", desc: GetMulCommandInfo(pinDesc)},
-		CommandItem{title: fmt.Sprintf("pin%d", config), desc: GetHundCommandInfo(pinDesc)},
-		CommandItem{title: fmt.Sprintf("pin%d", config*config), desc: GetTenKCommandInfo(pinDesc)},
-		CommandItem{title: "pwp", desc: GetSingleCommandInfo(pwpDesc)},
-		CommandItem{title: "salt", desc: GetSingleCommandInfo(saltDesc)},
-		CommandItem{title: "hash", desc: GetSingleCommandInfo(hashDesc)},
-		CommandItem{title: "directhash", desc: GetSingleCommandInfo(directDesc)},
+		CommandItem{title: "pass", desc: passDesc, Subcmd: passItems},
+		CommandItem{title: "pin", desc: pinDesc, Subcmd: pinItems},
+		CommandItem{title: "token", desc: tokenDesc, Subcmd: tokenItems},
+		CommandItem{title: "salt", desc: saltDesc},
+		CommandItem{title: "pwp", desc: pwpDesc},
+		CommandItem{title: "hash", desc: hashDesc},
 		CommandItem{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
 		CommandItem{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
 		CommandItem{title: "hcpvaultlist", desc: hcpvaultlistDesc},

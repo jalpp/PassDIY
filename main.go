@@ -16,15 +16,17 @@ import (
 )
 
 type model struct {
-	list       list.Model
-	spinner    spinner.Model
-	textInput  textinput.Model
-	loading    bool
-	output     string
-	prevOutput string
-	copied     bool
-	showInput  bool
-	inputMode  string
+	list          list.Model
+	spinner       spinner.Model
+	textInput     textinput.Model
+	loading       bool
+	output        string
+	prevOutput    string
+	copied        bool
+	showInput     bool
+	inputMode     string
+	showSublist   bool
+	currentParent string
 }
 
 func NewModel() model {
@@ -45,15 +47,17 @@ func NewModel() model {
 	textInput.Width = 30
 
 	return model{
-		list:       listModel,
-		spinner:    spin,
-		textInput:  textInput,
-		loading:    false,
-		output:     "",
-		prevOutput: "",
-		copied:     false,
-		showInput:  false,
-		inputMode:  "",
+		list:          listModel,
+		spinner:       spin,
+		textInput:     textInput,
+		loading:       false,
+		output:        "",
+		prevOutput:    "",
+		copied:        false,
+		showInput:     false,
+		inputMode:     "",
+		showSublist:   false,
+		currentParent: "",
 	}
 }
 
@@ -66,10 +70,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		case "esc":
+
+			if m.showSublist {
+				m.showSublist = false
+				m.currentParent = ""
+				m.list.SetItems(cmd.CreateCommandItems())
+				return m, nil
+			}
 		case "c":
 			if m.output != "" {
 				clipboard.WriteAll(m.output)
 				m.copied = true
+			}
+		case "x":
+			if m.output != "" {
+				clipboard.WriteAll("")
+				m.output = ""
 			}
 			return m, nil
 		case "enter":
@@ -96,6 +113,27 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			selectedItem := m.list.SelectedItem().(cmd.CommandItem).Title()
+			selectedItemList := m.list.SelectedItem().(cmd.CommandItem)
+
+			var subItems []list.Item
+			for _, subcmd := range selectedItemList.Subcmd {
+				subItems = append(subItems, list.Item(subcmd))
+			}
+
+			if len(selectedItemList.Subcmd) > 0 && !m.showSublist {
+				m.showSublist = true
+				m.currentParent = selectedItemList.Title()
+				m.list.SetItems(subItems)
+				return m, nil
+			}
+
+			if m.showSublist {
+				m.loading = true
+				m.copied = false
+				selectedCommand := selectedItemList.Title()
+				return m, tea.Batch(cmd.ExecuteCommand(selectedCommand, m.prevOutput), m.spinner.Tick)
+			}
+
 			if selectedItem == "hash" || selectedItem == "hcpvaultstore" {
 				m.inputMode = selectedItem
 				m.textInput.SetValue("")
@@ -180,7 +218,7 @@ func (m model) View() string {
 		return style.VaultStyle.Render(fmt.Sprintf("%s\n\n ⛛ Vault: %s", m.list.View(), m.output))
 	}
 
-	return style.GreenStyle.Render(fmt.Sprintf("%s\n\n 🔑 (Press c to copy) Buffer: %s%s", m.list.View(), cmd.CoverUp(m.output), copyMessage))
+	return style.GreenStyle.Render(fmt.Sprintf("%s\n\n 🔑 [c] Copy [esc] Exist Sublist [x] Clear \n 🔑 Buffer: %s%s", m.list.View(), cmd.CoverUp(m.output), copyMessage))
 }
 
 func main() {
