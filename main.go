@@ -101,6 +101,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.inputMode == "hash" && inputValue != "" {
 					return m, tea.Batch(cmd.ExecuteCommand("hash", inputValue), m.spinner.Tick)
 				}
+				if m.inputMode == "bcrypthash" && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand("bcrypthash", inputValue), m.spinner.Tick)
+				}
+				if m.inputMode == "argonhash" && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand("argonhash", inputValue), m.spinner.Tick)
+				}
 				if m.inputMode == "hcpvaultstore" {
 					if inputValue != "" && strings.Contains(inputValue, "=") {
 						return m, tea.Batch(cmd.ExecuteCommand("hcpvaultstore", inputValue), m.spinner.Tick)
@@ -128,6 +134,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.showSublist {
+				if selectedItem == "bcrypthash" || selectedItem == "argonhash" {
+					m.inputMode = selectedItem
+					m.textInput.SetValue("")
+					m.prevOutput = ""
+					m.showInput = true
+					m.textInput.Focus()
+					return m, nil
+				}
+
 				m.loading = true
 				m.copied = false
 				selectedCommand := selectedItemList.Title()
@@ -195,10 +210,24 @@ func (m model) View() string {
 				maskedInput,
 			))
 		}
-		return style.GreenStyle.Render(fmt.Sprintf(
-			"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
-			maskedInput,
-		))
+		if m.inputMode == "hash" {
+			return style.GreenStyle.Render(fmt.Sprintf(
+				"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
+				maskedInput,
+			))
+		}
+		if m.inputMode == "bcrypthash" {
+			return style.GreenStyle.Render(fmt.Sprintf(
+				"Enter the token/password for hashing with bcrypthash and press Enter:\n\n%s\n\n",
+				maskedInput,
+			))
+		}
+		if m.inputMode == "argonhash" {
+			return style.GreenStyle.Render(fmt.Sprintf(
+				"Enter the token/password for hashing with argonhash and press Enter:\n\n%s\n\n",
+				maskedInput,
+			))
+		}
 	}
 
 	copyMessage := ""

@@ -23,11 +23,14 @@ var (
 	pinDesc             = fmt.Sprintf("strong %d-digit pin", config.PIN_DIGIT_LENGTH)
 	pwpDesc             = fmt.Sprintf("strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
 	saltDesc            = fmt.Sprintf("password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
-	hashDesc            = "hash value of a password with Argon2id"
+	hashDesc            = "hash value of a password with Argon2id or bcrypthash"
+	argonhashDesc       = "hash value of a password with Argon2id"
+	bcrpthashDesc       = "hash value of a password with bcrypt algorithm"
 	directDesc          = "direct hash running buffer value with Argon2id"
 	hcpvaultstoreDesc   = "Store a new secret to Hashicop Vault"
 	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicop Vault"
 	hcpvaultlistDesc    = "List HCP Vault secrets log details"
+	onepass             = "1pass intergration"
 )
 
 func (i CommandItem) Title() string       { return i.title }
@@ -73,6 +76,10 @@ func CreateCommandItems() []list.Item {
 		{title: fmt.Sprintf("token%d", config), desc: GetHundCommandInfo("token")},
 		{title: fmt.Sprintf("token%d", config*config), desc: GetTenKCommandInfo("token")},
 	}
+	hashItems := []CommandItem{
+		{title: "argonhash", desc: argonhashDesc},
+		{title: "bcrypthash", desc: bcrpthashDesc},
+	}
 
 	return []list.Item{
 		CommandItem{title: "pass", desc: passDesc, Subcmd: passItems},
@@ -80,7 +87,7 @@ func CreateCommandItems() []list.Item {
 		CommandItem{title: "token", desc: tokenDesc, Subcmd: tokenItems},
 		CommandItem{title: "salt", desc: saltDesc},
 		CommandItem{title: "pwp", desc: pwpDesc},
-		CommandItem{title: "hash", desc: hashDesc},
+		CommandItem{title: "hash", desc: hashDesc, Subcmd: hashItems},
 		CommandItem{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
 		CommandItem{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
 		CommandItem{title: "hcpvaultlist", desc: hcpvaultlistDesc},
@@ -132,9 +139,11 @@ func HandleCommand(input, userInput string) string {
 		return cmd.GetPwp()
 	case "salt":
 		return cmd.AddSalt(userInput)
-	case "hash":
+	case "argonhash":
 		return cmd.HashFunc(userInput)
-	case "directhash":
+	case "bcrypthash":
+		return cmd.BcryptHash(userInput)
+	case "hash":
 		return cmd.HashFunc(userInput)
 	case "hcpvaultstore":
 		parts := strings.SplitN(userInput, "=", 2)

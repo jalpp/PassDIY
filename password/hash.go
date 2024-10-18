@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/alexedwards/argon2id"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HashFunc(pass string) string {
@@ -18,4 +19,16 @@ func HashFunc(pass string) string {
 	}
 
 	return hash
+}
+
+func BcryptHash(pass string) string {
+	if CheckError(pass) {
+		return "BcryptHash hash can not be generated! Please provide token/password input first."
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(hash)
+
 }
