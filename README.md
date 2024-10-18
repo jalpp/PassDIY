@@ -81,6 +81,7 @@ const (
  - [BubbleTea](https://github.com/charmbracelet/bubbletea)
  - [Lipgloss](github.com/charmbracelet/lipgloss)
  - [Argon2id](https://github.com/alexedwards/argon2id)
+ - [Bcrypt]("golang.org/x/crypto/bcrypt")
  - [Hashicorp Vault](https://developer.hashicorp.com/hcp/api-docs/vault-secrets#overview)
  - [English](github.com/gregoryv/english)
  - [Clipboard](https://github.com/atotto/clipboard)
