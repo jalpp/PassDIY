@@ -32,6 +32,8 @@ var (
 	hcpvaultlistDesc    = "List HCP Vault secrets log details"
 	opassstoreDesc      = "Store a new secret to 1Password in password format"
 	opasslistDesc       = "List 1Password Vault item names"
+	hcpDesc             = "Manage Token/Password on Hashicorp Vault"
+	opassDesc           = "Manage Token/Password on 1Password"
 )
 
 func (i CommandItem) Title() string       { return i.title }
@@ -82,6 +84,17 @@ func CreateCommandItems() []list.Item {
 		{title: "bcrypthash", desc: bcrpthashDesc},
 	}
 
+	hcpItems := []CommandItem{
+		{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
+		{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
+		{title: "hcpvaultlist", desc: hcpvaultlistDesc},
+	}
+
+	opassItems := []CommandItem{
+		{title: "1passstore", desc: opassstoreDesc},
+		{title: "1passlist", desc: opasslistDesc},
+	}
+
 	return []list.Item{
 		CommandItem{title: "pass", desc: passDesc, Subcmd: passItems},
 		CommandItem{title: "pin", desc: pinDesc, Subcmd: pinItems},
@@ -89,11 +102,8 @@ func CreateCommandItems() []list.Item {
 		CommandItem{title: "salt", desc: saltDesc},
 		CommandItem{title: "pwp", desc: pwpDesc},
 		CommandItem{title: "hash", desc: hashDesc, Subcmd: hashItems},
-		CommandItem{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
-		CommandItem{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
-		CommandItem{title: "hcpvaultlist", desc: hcpvaultlistDesc},
-		CommandItem{title: "1passstore", desc: opassstoreDesc},
-		CommandItem{title: "1passlist", desc: opasslistDesc},
+		CommandItem{title: "hcpvault", desc: hcpDesc, Subcmd: hcpItems},
+		CommandItem{title: "1pass", desc: opassDesc, Subcmd: opassItems},
 	}
 }
 

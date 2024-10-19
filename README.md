@@ -1,4 +1,6 @@
 
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)]
+
 # PassDIY
 
 A personal password/token manager TUI for developers to generate various types of hash/salted secrets and store them in different cloud based vaults
@@ -15,11 +17,17 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - Salt tokens/passwords
 - Copy passwords to clipboard 
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
+- 1Password integration to connect to secure vault and store generated secrets on cloud
 
 ## Hashicorp Vault Commands
 - hcpvaultconnect automatically connect to hcp vault via service principle
 - hcpvaultstore store secrets into the vault via name=value format
 - hcpvaultlist list log details about token created at, created by details
+
+
+## 1Password Commands
+- 1passstore store secrets into the vault via name|password|url format
+- 1passwordlist list secret names for connected vault
 
 ## Demo
 
@@ -79,7 +87,15 @@ const (
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+## Discord
+
+[Invite](https://discord.gg/FU6DMKZuZY)
+
 ## Authors
 
 - [@jalpp](https://www.github.com/jalpp)
+
+## Contributor
+
+- [@cursedcadaver](https://github.com/cursedcadaver)
 
