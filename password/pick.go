@@ -7,7 +7,7 @@ import (
 )
 
 func GetMul(picker string) string {
-	var buffer string
+	var buffer string = "\n"
 
 	for i := 0; i <= config.MULTIPLE_VALUE_COUNT; i++ {
 		switch picker {
