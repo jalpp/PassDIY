@@ -101,12 +101,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.inputMode == "hash" && inputValue != "" {
 					return m, tea.Batch(cmd.ExecuteCommand("hash", inputValue), m.spinner.Tick)
 				}
+        
+				if m.inputMode == "bcrypthash" && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand("bcrypthash", inputValue), m.spinner.Tick)
+				}
+				if m.inputMode == "argonhash" && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand("argonhash", inputValue), m.spinner.Tick)
+        }
+
 				if m.inputMode == "1passstore" {
 					if inputValue != "" && strings.Contains(inputValue, "|") {
 						return m, tea.Batch(cmd.ExecuteCommand("1passstore", inputValue), m.spinner.Tick)
 					}
 					m.output = "Please provide input in 'user|value|url' format."
 					return m, nil
+
 				}
 				if m.inputMode == "hcpvaultstore" {
 					if inputValue != "" && strings.Contains(inputValue, "=") {
@@ -136,6 +145,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if m.showSublist {
+				if selectedItem == "bcrypthash" || selectedItem == "argonhash" {
+					m.inputMode = selectedItem
+					m.textInput.SetValue("")
+					m.prevOutput = ""
+					m.showInput = true
+					m.textInput.Focus()
+					return m, nil
+				}
+
 				m.loading = true
 				m.copied = false
 				selectedCommand := selectedItemList.Title()
@@ -203,19 +221,37 @@ func (m model) View() string {
 				maskedInput,
 			))
 		}
-
-		if m.inputMode == "1passstore" {
-			return style.GreenStyle.Render(
-				fmt.Sprintf(
-					"Enter the password/token in 'name|value|url' format and press Enter: \n\n%s\n\n",
-					maskedInput,
-				))
-		}
-
+	if m.inputMode == "hash" {
 		return style.GreenStyle.Render(fmt.Sprintf(
 			"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
 			maskedInput,
 		))
+	}
+	if m.inputMode == "bcrypthash" {
+		return style.GreenStyle.Render(fmt.Sprintf(
+			"Enter the token/password for hashing with bcrypthash and press Enter:\n\n%s\n\n",
+			maskedInput,
+		))
+	}
+	if m.inputMode == "argonhash" {
+		return style.GreenStyle.Render(fmt.Sprintf(
+			"Enter the token/password for hashing with argonhash and press Enter:\n\n%s\n\n",
+			maskedInput,
+		))
+	}
+	if m.inputMode == "1passstore" {
+		return style.GreenStyle.Render(
+			fmt.Sprintf(
+				"Enter the password/token in 'name|value|url' format and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+	}
+
+	return style.GreenStyle.Render(fmt.Sprintf(
+		"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
+		maskedInput,
+	))
+
 	}
 
 	copyMessage := ""
