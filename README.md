@@ -28,9 +28,11 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - hcpvaultstore store secrets into the vault via name=value format
 - hcpvaultlist list log details about token created at, created by details
 
+
 ## 1Password Commands
 - 1passstore store secrets into the vault via name|password|url format
 - 1passwordlist list secret names for connected vault
+
 
 ## Demo
 
@@ -67,6 +69,41 @@ const (
 	SALT_EXTRA_LENGTH     int = 10  // how many extra chars you want to add to a password/token
 )
 
+```
+
+## Installation
+
+If you have `make` installed, follow these steps to build, run, and install **passdiy**:
+
+1. **Build the project**:
+   ```
+   make build
+   ```
+
+2. **Run the application**:
+   ```
+   make run
+   ```
+
+3. **Install globally** (optional):
+   ```
+   sudo make install
+   ```
+
+You can then run it from anywhere with: `passdiy`
+
+If you do not have `make` you can build and run it traditionally with:
+
+```
+go run .
+```
+
+## Uninstall
+
+You can uninstall passdiy with:
+
+```
+sudo make uninstall
 ```
 ## Roadmap
 
