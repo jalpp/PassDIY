@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jalpp/passdiy/config"
 	hcp "github.com/jalpp/passdiy/hcpvault"
+	opass "github.com/jalpp/passdiy/onepassword"
 	cmd "github.com/jalpp/passdiy/password"
 )
 
@@ -24,10 +25,11 @@ var (
 	pwpDesc             = fmt.Sprintf("strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
 	saltDesc            = fmt.Sprintf("password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
 	hashDesc            = "hash value of a password with Argon2id"
-	directDesc          = "direct hash running buffer value with Argon2id"
-	hcpvaultstoreDesc   = "Store a new secret to Hashicop Vault"
-	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicop Vault"
+	hcpvaultstoreDesc   = "Store a new secret to Hashicorp Vault"
+	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicorp Vault"
 	hcpvaultlistDesc    = "List HCP Vault secrets log details"
+	opassstoreDesc      = "Store a new secret to 1Password in password format"
+	opasslistDesc       = "List 1Password Vault item names"
 )
 
 func (i CommandItem) Title() string       { return i.title }
@@ -84,6 +86,8 @@ func CreateCommandItems() []list.Item {
 		CommandItem{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
 		CommandItem{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
 		CommandItem{title: "hcpvaultlist", desc: hcpvaultlistDesc},
+		CommandItem{title: "1passstore", desc: opassstoreDesc},
+		CommandItem{title: "1passlist", desc: opasslistDesc},
 	}
 }
 
@@ -152,6 +156,17 @@ func HandleCommand(input, userInput string) string {
 			return "Please connect to Hashicorp vault via hcpvaultconnect"
 		}
 		return list
+	case "1passstore":
+		parts := strings.SplitN(userInput, "|", 3)
+		if len(parts) == 3 {
+			user := parts[0]
+			pass := parts[1]
+			url := parts[2]
+			return opass.Create(user, pass, url)
+		}
+		return "Invalid format. use 'user|value|url'."
+	case "1passlist":
+		return opass.List()
 	default:
 		return fmt.Sprintf("Unknown command: %s", input)
 	}

@@ -101,6 +101,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.inputMode == "hash" && inputValue != "" {
 					return m, tea.Batch(cmd.ExecuteCommand("hash", inputValue), m.spinner.Tick)
 				}
+				if m.inputMode == "1passstore" {
+					if inputValue != "" && strings.Contains(inputValue, "|") {
+						return m, tea.Batch(cmd.ExecuteCommand("1passstore", inputValue), m.spinner.Tick)
+					}
+					m.output = "Please provide input in 'user|value|url' format."
+					return m, nil
+				}
 				if m.inputMode == "hcpvaultstore" {
 					if inputValue != "" && strings.Contains(inputValue, "=") {
 						return m, tea.Batch(cmd.ExecuteCommand("hcpvaultstore", inputValue), m.spinner.Tick)
@@ -110,6 +117,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				m.output = "Please provide valid input."
 				return m, nil
+
 			}
 
 			selectedItem := m.list.SelectedItem().(cmd.CommandItem).Title()
@@ -134,7 +142,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Batch(cmd.ExecuteCommand(selectedCommand, m.prevOutput), m.spinner.Tick)
 			}
 
-			if selectedItem == "hash" || selectedItem == "hcpvaultstore" {
+			if selectedItem == "hash" || selectedItem == "hcpvaultstore" || selectedItem == "1passstore" {
 				m.inputMode = selectedItem
 				m.textInput.SetValue("")
 				m.prevOutput = ""
@@ -195,6 +203,15 @@ func (m model) View() string {
 				maskedInput,
 			))
 		}
+
+		if m.inputMode == "1passstore" {
+			return style.GreenStyle.Render(
+				fmt.Sprintf(
+					"Enter the password/token in 'name|value|url' format and press Enter: \n\n%s\n\n",
+					maskedInput,
+				))
+		}
+
 		return style.GreenStyle.Render(fmt.Sprintf(
 			"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
 			maskedInput,
@@ -216,6 +233,10 @@ func (m model) View() string {
 
 	if strings.Contains(strings.ToLower(m.output), "hashicorp") {
 		return style.VaultStyle.Render(fmt.Sprintf("%s\n\n ⛛ Vault: %s", m.list.View(), m.output))
+	}
+
+	if strings.Contains(strings.ToLower(m.output), "1password") {
+		return style.OPassStyle.Render(fmt.Sprintf("%s\n\n1Password Vault: %s", m.list.View(), m.output))
 	}
 
 	return style.GreenStyle.Render(fmt.Sprintf("%s\n\n 🔑 [c] Copy [esc] Exist Sublist [x] Clear \n 🔑 Buffer: %s%s", m.list.View(), cmd.CoverUp(m.output), copyMessage))
