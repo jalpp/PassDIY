@@ -1,7 +1,7 @@
 
 # PassDIY
 
-A personal password/token manager TUI for developers to generate various types of hash/salted secrets and store them in their cloud-based Hashicorp Vault
+A personal password/token manager TUI for developers to generate various types of hash/salted secrets and store them in different cloud based vaults
 
 ## Why PassDIY?
 
@@ -26,32 +26,20 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 ![passdiydemo3](https://github.com/user-attachments/assets/b17a0164-9dcd-491f-9a6d-29c48f6d8e82)
 
 
-## Setup
+## Hashicorp Setup
 
-To allow PassDIY to store and connect to your Hashicorp vault you must create a [service principle](https://developer.hashicorp.com/hcp/docs/hcp/iam/service-principal) with ```Vault Secrets App Manager``` permission. You would also need to set up following Env variables to successfully connect and store the secrets to specific app in your vault. If you don't care about storing the values you can ignore the below variables and directly run 
-`go run main.go`
+To allow PassDIY to store and connect to your Hashicorp vault you must create a [service principle](https://developer.hashicorp.com/hcp/docs/hcp/iam/service-principal) with ```Vault Secrets App Manager``` permission. Also would need set below envs
 
-`HCP_CLIENT_ID` your sp client ID
+`export HCP_CLIENT_ID=<your-hcp-client-id>`
+`export HCP_CLIENT_SECRET=<your-hcp-client-secret>`
 
-`HCP_CLIENT_SECRET` your sp secret
+more detailed in `./Setup.md`
 
-`HCP_ORG_ID` your HCP org ID
+## 1Password Setup
 
-`HCP_PROJECT_ID` your HCP project ID
+To allow PassDIY to connect to your 1Password Vault you would need to set [service principle](https://developer.1password.com/docs/sdks) anf the service account token
 
-`HCP_APP_NAME` your HCP app name
-
-`HCP_API_TOKEN` your HCP API token generated from `HCP_CLIENT_ID` and `HCP_CLIENT_SECRET` you don't need generate `HCP_API_TOKEN` every time it expires the PassDIY's `hcpvaultconnect` command will handle it by automatically connecting for you
-
-you can now clone the repo and run from source
-
-`go run main.go`
-
-can also build PassDIY with build command and run passdiy
-
-`go build`
-
-`./passdiy`
+`export OP_SERVICE_ACCOUNT_TOKEN=<your-service-account-token>`
 
 ## Config
 
@@ -85,6 +73,7 @@ const (
  - [Hashicorp Vault](https://developer.hashicorp.com/hcp/api-docs/vault-secrets#overview)
  - [English](github.com/gregoryv/english)
  - [Clipboard](https://github.com/atotto/clipboard)
+ - [1Password SDK](https://github.com/1Password/onepassword-sdk-go)
 
 ## License
 
