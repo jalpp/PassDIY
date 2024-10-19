@@ -36,7 +36,7 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 ## Demo
 
-![passdiydemo3](https://github.com/user-attachments/assets/b17a0164-9dcd-491f-9a6d-29c48f6d8e82)
+![passdiydemo4](https://github.com/user-attachments/assets/b26dabb9-96ad-4a68-a742-dfeb4fc604d7)
 
 
 ## Hashicorp Setup
