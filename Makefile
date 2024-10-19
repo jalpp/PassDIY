@@ -6,3 +6,6 @@ run:
 
 install:
 	@sudo mv ./bin/passdiy /usr/bin/
+
+uninstall:
+	@sudo rm /usr/bin/passdiy
