@@ -17,7 +17,7 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 - Generation of strong secrets like pins, passwords, API tokens, passphrases 
 - Generate X multiple secrets at once and pick X and X password generation algorithms
-- Hash tokens/passwords with Argon2id 
+- Hash tokens/passwords with Argon2Id and Bcrypt
 - Salt tokens/passwords
 - Copy passwords to clipboard 
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
@@ -27,7 +27,6 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - hcpvaultconnect automatically connect to hcp vault via service principle
 - hcpvaultstore store secrets into the vault via name=value format
 - hcpvaultlist list log details about token created at, created by details
-
 
 ## 1Password Commands
 - 1passstore store secrets into the vault via name|password|url format
