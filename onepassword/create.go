@@ -75,7 +75,7 @@ func createItem(client *onepassword.Client, vaultID string, usernameVal string, 
 		return fmt.Sprintf("Error %s", err.Error())
 	}
 
-	return fmt.Sprintf("Successfully created password item ID %s in 1Password Vault", createdItem.Title)
+	return fmt.Sprintf("Successfully created password item tile of %s in 1Password Vault", createdItem.Title)
 }
 
 func Create(user string, pass string, URL string) string {

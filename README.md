@@ -1,4 +1,10 @@
 
+<p align="center">
+  <img src="https://github.com/jalpp/PassDIY/blob/dev/style/icon.png?raw=true" alt="Image Description" width=20% height=20% />
+</p>
+
+![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
+
 # PassDIY
 
 A personal password/token manager TUI for developers to generate various types of hash/salted secrets and store them in different cloud based vaults
@@ -11,15 +17,22 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 - Generation of strong secrets like pins, passwords, API tokens, passphrases 
 - Generate X multiple secrets at once and pick X and X password generation algorithms
-- Hash tokens/passwords with Argon2id 
+- Hash tokens/passwords with Argon2Id and Bcrypt
 - Salt tokens/passwords
 - Copy passwords to clipboard 
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
+- 1Password integration to connect to secure vault and store generated secrets on cloud
 
 ## Hashicorp Vault Commands
 - hcpvaultconnect automatically connect to hcp vault via service principle
 - hcpvaultstore store secrets into the vault via name=value format
 - hcpvaultlist list log details about token created at, created by details
+
+
+## 1Password Commands
+- 1passstore store secrets into the vault via name|password|url format
+- 1passwordlist list secret names for connected vault
+
 
 ## Demo
 
@@ -57,6 +70,41 @@ const (
 )
 
 ```
+
+## Installation
+
+If you have `make` installed, follow these steps to build, run, and install **passdiy**:
+
+1. **Build the project**:
+   ```
+   make build
+   ```
+
+2. **Run the application**:
+   ```
+   make run
+   ```
+
+3. **Install globally** (optional):
+   ```
+   sudo make install
+   ```
+
+You can then run it from anywhere with: `passdiy`
+
+If you do not have `make` you can build and run it traditionally with:
+
+```
+go run .
+```
+
+## Uninstall
+
+You can uninstall passdiy with:
+
+```
+sudo make uninstall
+```
 ## Roadmap
 
 - dynamically change config
@@ -69,6 +117,7 @@ const (
  - [BubbleTea](https://github.com/charmbracelet/bubbletea)
  - [Lipgloss](github.com/charmbracelet/lipgloss)
  - [Argon2id](https://github.com/alexedwards/argon2id)
+ - [Bcrypt](https://golang.org/x/crypto/bcrypt)
  - [Hashicorp Vault](https://developer.hashicorp.com/hcp/api-docs/vault-secrets#overview)
  - [English](github.com/gregoryv/english)
  - [Clipboard](https://github.com/atotto/clipboard)
@@ -78,7 +127,15 @@ const (
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+## Discord
+
+[Invite](https://discord.gg/FU6DMKZuZY)
+
 ## Authors
 
 - [@jalpp](https://www.github.com/jalpp)
+
+## Contributor
+
+- [@cursedcadaver](https://github.com/cursedcadaver)
 
