@@ -61,7 +61,7 @@ const (
 
 ## Installation
 
-- If you have `make` installed, follow these steps to build, run, and install **passdiy**:
+If you have `make` installed, follow these steps to build, run, and install **passdiy**:
 
 1. **Build the project**:
    ```
@@ -78,9 +78,9 @@ const (
    sudo make install
    ```
 
-- You can then run it from anywhere with: `passdiy`
+You can then run it from anywhere with: `passdiy`
 
-- If you do not have `make` you can build and run it traditionally with:
+If you do not have `make` you can build and run it traditionally with:
 
 ```
 go run .
@@ -88,7 +88,7 @@ go run .
 
 ## Uninstall
 
-- You can uninstall passdiy with:
+You can uninstall passdiy with:
 
 ```
 sudo make uninstall
