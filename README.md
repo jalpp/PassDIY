@@ -1,12 +1,7 @@
 
-<img 
-    style="display: block; 
-           margin-left: auto;
-           margin-right: auto;
-           width: 30%;"
-    src="https://github.com/jalpp/PassDIY/blob/dev/style/icon.png?raw=true"
-    alt="icon">
-</img>
+<p align="center">
+  <img src="https://github.com/jalpp/PassDIY/blob/dev/style/icon.png?raw=true" alt="Image Description" width=20% height=20% />
+</p>
 
 ![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
 
