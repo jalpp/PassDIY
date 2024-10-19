@@ -1,5 +1,5 @@
 
-<img src="https://github.com/jalpp/PassDIY/blob/dev/style/icon.png?raw=true" width=50% height=50%>
+<div style="text-align:center"><img src="https://github.com/jalpp/PassDIY/blob/dev/style/icon.png?raw=true" width=20% height=20%></div>
 
 ![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
 
