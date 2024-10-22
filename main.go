@@ -128,40 +128,49 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			}
 
-			selectedItem := m.list.SelectedItem().(cmd.CommandItem).Title()
-			selectedItemList := m.list.SelectedItem().(cmd.CommandItem)
+			if item, ok := m.list.SelectedItem().(cmd.CommandItem); ok {
+				var selectedItem string
+				if item.FilterValue() != "" {
+					selectedItem = item.FilterValue()
+				} else {
+					selectedItem = item.Title()
+				}
+				selectedItemList := item
+				var subItems []list.Item
+				for _, subcmd := range selectedItemList.Subcmd {
+					subItems = append(subItems, list.Item(subcmd))
+				}
 
-			var subItems []list.Item
-			for _, subcmd := range selectedItemList.Subcmd {
-				subItems = append(subItems, list.Item(subcmd))
-			}
-
-			if len(selectedItemList.Subcmd) > 0 && !m.showSublist {
-				m.showSublist = true
-				m.currentParent = selectedItemList.Title()
-				m.list.SetItems(subItems)
-				return m, nil
-			}
-
-			if m.showSublist {
-				if selectedItem == "bcrypthash" || selectedItem == "argonhash" || selectedItem == "hcpvaultstore" || selectedItem == "1passstore" {
-					m.inputMode = selectedItem
-					m.textInput.SetValue("")
-					m.prevOutput = ""
-					m.showInput = true
-					m.textInput.Focus()
+				if len(selectedItemList.Subcmd) > 0 && !m.showSublist {
+					m.showSublist = true
+					m.currentParent = selectedItemList.Title()
+					m.list.SetItems(subItems)
 					return m, nil
+				}
+
+				if m.showSublist {
+					if selectedItem == "bcrypthash" || selectedItem == "argonhash" || selectedItem == "hcpvaultstore" || selectedItem == "1passstore" {
+						m.inputMode = selectedItem
+						m.textInput.SetValue("")
+						m.prevOutput = ""
+						m.showInput = true
+						m.textInput.Focus()
+						return m, nil
+					}
+
+					m.loading = true
+					m.copied = false
+					selectedCommand := selectedItemList.Title()
+					return m, tea.Batch(cmd.ExecuteCommand(selectedCommand, m.prevOutput), m.spinner.Tick)
 				}
 
 				m.loading = true
 				m.copied = false
-				selectedCommand := selectedItemList.Title()
-				return m, tea.Batch(cmd.ExecuteCommand(selectedCommand, m.prevOutput), m.spinner.Tick)
+				return m, tea.Batch(cmd.ExecuteCommand(selectedItem, m.prevOutput), m.spinner.Tick)
+			} else {
+				fmt.Printf("SelectedItem is not of type cmd.CommandItem or is nil")
 			}
 
-			m.loading = true
-			m.copied = false
-			return m, tea.Batch(cmd.ExecuteCommand(selectedItem, m.prevOutput), m.spinner.Tick)
 		}
 
 	case tea.WindowSizeMsg:
