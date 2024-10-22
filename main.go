@@ -129,7 +129,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if item, ok := m.list.SelectedItem().(cmd.CommandItem); ok {
-				selectedItem := item.Title()
+				var selectedItem string
+				if item.FilterValue() != "" {
+					selectedItem = item.FilterValue()
+				} else {
+					selectedItem = item.Title()
+				}
 				selectedItemList := item
 				var subItems []list.Item
 				for _, subcmd := range selectedItemList.Subcmd {
