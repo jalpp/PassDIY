@@ -85,7 +85,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "x":
 			if m.output != "" {
-				clipboard.WriteAll("")
 				m.output = ""
 			}
 			return m, nil

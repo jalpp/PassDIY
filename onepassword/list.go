@@ -22,7 +22,7 @@ func listItems(client *onepassword.Client, vaultID string) string {
 		} else if err != nil {
 			panic(err)
 		}
-		buffer += fmt.Sprintf("%s %s\n", "Item:", item.Title)
+		buffer += fmt.Sprintf("%s %s\n", "Item Title:", item.Title)
 	}
 
 	return buffer

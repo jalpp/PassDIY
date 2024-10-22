@@ -19,19 +19,19 @@ type CommandItem struct {
 }
 
 var (
-	passDesc            = fmt.Sprintf("strong %d-char password", config.PASWORD_CHAR_LENGTH)
-	tokenDesc           = fmt.Sprintf("strong %d-char API token", config.API_TOKEN_CHAR_LENGTH)
-	pinDesc             = fmt.Sprintf("strong %d-digit pin", config.PIN_DIGIT_LENGTH)
-	pwpDesc             = fmt.Sprintf("strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
-	saltDesc            = fmt.Sprintf("password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
-	hashDesc            = "hash value of a password with Argon2id or bcrypthash"
-	argonhashDesc       = "hash value of a password with Argon2id"
-	bcrpthashDesc       = "hash value of a password with bcrypt algorithm"
+	pwpDesc             = fmt.Sprintf("Generate strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
+	saltDesc            = fmt.Sprintf("Generate password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
+	hashDesc            = "Generate hash value of a password with Argon2id or bcrypthash"
+	argonhashDesc       = "Generate hash value of a password with Argon2id"
+	bcrpthashDesc       = "Generate hash value of a password with bcrypt algorithm"
 	hcpvaultstoreDesc   = "Store a new secret to Hashicorp Vault"
 	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicorp Vault"
 	hcpvaultlistDesc    = "List HCP Vault secrets log details"
 	opassstoreDesc      = "Store a new secret to 1Password in password format"
 	opasslistDesc       = "List 1Password Vault item names"
+	mainpassDesc        = "Generate strong passwords from various algorithms"
+	mainpinDesc         = "Generate strong pins from various algorithms"
+	maintokenDesc       = "Generate strong token from various algorithms"
 	hcpDesc             = "Manage Token/Password on Hashicorp Vault"
 	opassDesc           = "Manage Token/Password on 1Password"
 )
@@ -96,9 +96,9 @@ func CreateCommandItems() []list.Item {
 	}
 
 	return []list.Item{
-		CommandItem{title: "pass", desc: passDesc, Subcmd: passItems},
-		CommandItem{title: "pin", desc: pinDesc, Subcmd: pinItems},
-		CommandItem{title: "token", desc: tokenDesc, Subcmd: tokenItems},
+		CommandItem{title: "pass", desc: mainpassDesc, Subcmd: passItems},
+		CommandItem{title: "pin", desc: mainpinDesc, Subcmd: pinItems},
+		CommandItem{title: "token", desc: maintokenDesc, Subcmd: tokenItems},
 		CommandItem{title: "salt", desc: saltDesc},
 		CommandItem{title: "pwp", desc: pwpDesc},
 		CommandItem{title: "hash", desc: hashDesc, Subcmd: hashItems},
