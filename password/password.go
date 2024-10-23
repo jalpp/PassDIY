@@ -3,8 +3,6 @@ package cmds
 import (
 	"math/rand"
 	"strings"
-
-	config "github.com/jalpp/passdiy/config"
 )
 
 func getLetters() string {
@@ -66,11 +64,11 @@ func CheckError(input string) bool {
 }
 
 func GetPin() string {
-	return GetRandomPassword(config.PIN_DIGIT_LENGTH, getNum())
+	return GetRandomPassword(PIN_DIGIT_LENGTH, getNum())
 }
 
 func GetStrongPassword() string {
-	return GetRandomPassword(config.PASWORD_CHAR_LENGTH, getLetterUpper()+getLetters()+getNum()+getSpec())
+	return GetRandomPassword(PASSWORD_CHAR_LENGTH, getLetterUpper()+getLetters()+getNum()+getSpec())
 }
 
 func AddSalt(pass string) string {
@@ -79,9 +77,9 @@ func AddSalt(pass string) string {
 		return "Salt can not be added! Please generate a password first"
 	}
 
-	return GetRandomPassword(rand.Intn(config.SALT_EXTRA_LENGTH)+2, pass) + pass
+	return GetRandomPassword(rand.Intn(SALT_EXTRA_LENGTH)+2, pass) + pass
 }
 
 func GetAPIToken() string {
-	return GetRandomPassword(config.API_TOKEN_CHAR_LENGTH, getLetterUpper()+getLetters())
+	return GetRandomPassword(API_TOKEN_CHAR_LENGTH, getLetterUpper()+getLetters())
 }

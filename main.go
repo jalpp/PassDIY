@@ -78,6 +78,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.list.SetItems(cmd.CreateCommandItems())
 				return m, nil
 			}
+
+			if m.showInput {
+				m.showInput = false
+				m.currentParent = ""
+				m.list.SetItems(m.list.Items())
+				return m, nil
+			}
+
 		case "c":
 			if m.output != "" {
 				clipboard.WriteAll(m.output)
@@ -97,15 +105,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.textInput.SetValue("")
 				m.showInput = false
 
-				if m.inputMode == "hash" && inputValue != "" {
-					return m, tea.Batch(cmd.ExecuteCommand("hash", inputValue), m.spinner.Tick)
+				if cmd.IsHashCommand(m.inputMode) && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand(m.inputMode, inputValue), m.spinner.Tick)
 				}
 
-				if m.inputMode == "bcrypthash" && inputValue != "" {
-					return m, tea.Batch(cmd.ExecuteCommand("bcrypthash", inputValue), m.spinner.Tick)
-				}
-				if m.inputMode == "argonhash" && inputValue != "" {
-					return m, tea.Batch(cmd.ExecuteCommand("argonhash", inputValue), m.spinner.Tick)
+				if cmd.IsConfigCommand(m.inputMode) && inputValue != "" {
+					return m, tea.Batch(cmd.ExecuteCommand(m.inputMode, inputValue), m.spinner.Tick)
 				}
 
 				if m.inputMode == "1passstore" {
@@ -149,7 +154,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 
 				if m.showSublist {
-					if selectedItem == "bcrypthash" || selectedItem == "argonhash" || selectedItem == "hcpvaultstore" || selectedItem == "1passstore" {
+					if cmd.IsCommandInputMode(selectedItem) {
 						m.inputMode = selectedItem
 						m.textInput.SetValue("")
 						m.prevOutput = ""
@@ -213,38 +218,58 @@ func (m model) View() string {
 
 	if m.showInput {
 		maskedInput := cmd.CoverUp(m.textInput.Value())
-
-		if m.inputMode == "hcpvaultstore" {
+		switch m.inputMode {
+		case "hcpvaultstore":
 			return style.VaultStyle.Render(fmt.Sprintf(
 				"Enter the token in 'name=value' format and press Enter:\n\n%s\n\n",
 				maskedInput,
 			))
-		}
-		if m.inputMode == "bcrypthash" {
+		case "bcrypthash":
 			return style.GreenStyle.Render(fmt.Sprintf(
 				"Enter the token/password for hashing with bcrypthash and press Enter:\n\n%s\n\n",
 				maskedInput,
 			))
-		}
-		if m.inputMode == "argonhash" {
+		case "argonhash":
 			return style.GreenStyle.Render(fmt.Sprintf(
 				"Enter the token/password for hashing with argonhash and press Enter:\n\n%s\n\n",
 				maskedInput,
 			))
+		case "1passstore":
+			return style.OPassStyle.Render(fmt.Sprintf(
+				"Enter the password/token in 'username|password|url' format and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configpass":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the new password char length and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configtoken":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the new token char length and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configpin":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the new pin digit length and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configsalt":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the new salt char length and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configpwp":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the new pwp word count and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
+		case "configmul":
+			return style.ConfigStyle.Render(fmt.Sprintf(
+				"Enter the number of password/token/pins you want to generate and press Enter: \n\n%s\n\n",
+				maskedInput,
+			))
 		}
-		if m.inputMode == "1passstore" {
-			return style.OPassStyle.Render(
-				fmt.Sprintf(
-					"Enter the password/token in 'username|password|url' format and press Enter: \n\n%s\n\n",
-					maskedInput,
-				))
-		}
-
-		return style.GreenStyle.Render(fmt.Sprintf(
-			"Enter the token/password for hashing with Argon2id and press Enter:\n\n%s\n\n",
-			maskedInput,
-		))
-
 	}
 
 	copyMessage := ""
@@ -268,7 +293,12 @@ func (m model) View() string {
 		return style.OPassStyle.Render(fmt.Sprintf("%s\n\n1Password Vault: %s", m.list.View(), m.output))
 	}
 
+	if strings.Contains(strings.ToLower(m.output), "passdiy") {
+		return style.ConfigStyle.Render(fmt.Sprintf("%s\n\n %s", m.list.View(), m.output))
+	}
+
 	return style.GreenStyle.Render(fmt.Sprintf("%s\n\n 🔑 [c] Copy [esc] Exist Sublist [x] Clear \n 🔑 Buffer: %s%s", m.list.View(), cmd.CoverUp(m.output), copyMessage))
+
 }
 
 func main() {
