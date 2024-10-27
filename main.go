@@ -7,6 +7,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	cmd "github.com/jalpp/passdiy/cmds"
+	"github.com/jalpp/passdiy/extend"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
@@ -295,6 +296,10 @@ func (m model) View() string {
 
 	if strings.Contains(strings.ToLower(m.output), "passdiy") {
 		return style.ConfigStyle.Render(fmt.Sprintf("%s\n\n %s", m.list.View(), m.output))
+	}
+
+	if strings.Contains(strings.ToLower(m.output), extend.VAULT_PREFIX) {
+		return style.CustomStyle.Render(fmt.Sprintf("%s\n\n %s", m.list.View(), m.output))
 	}
 
 	return style.GreenStyle.Render(fmt.Sprintf("%s\n\n 🔑 [c] Copy [esc] Exist Sublist [x] Clear \n 🔑 Buffer: %s%s", m.list.View(), cmd.CoverUp(m.output), copyMessage))
