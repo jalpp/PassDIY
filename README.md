@@ -23,6 +23,7 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - Automatically config password/token lengths and other settings
 - Hashicorp Vault integration to connect to secure vault and store generated secrets on cloud
 - 1Password integration to connect to secure vault and store generated secrets on cloud
+- Custom vaults support via extend package in passdiy to allow you to connect to your own cloud vaults via passDiy UI
 
 ## Hashicorp Vault Commands
 - hcpvaultconnect automatically connect to hcp vault via service principle
@@ -34,6 +35,8 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - 1passstore store secrets into the vault via name|password|url format
 - 1passwordlist list secret names for connected vault
 
+## Custom Vault
+Don't see a vault you use, but not supported by PassDIY? No worries! write your own vaults driver code in `/extend` within provided functions and set `export USE_PASDIY_CUSTOM_VAULT=true`to connect PassDIY to your vault provider. Read `/extend/README.md`
 
 ## Demo
 
@@ -55,9 +58,37 @@ To allow PassDIY to connect to your 1Password Vault you would need to set [servi
 
 `export OP_SERVICE_ACCOUNT_TOKEN=<your-service-account-token>`
 
-## Config
+## Config custom vault to use PassDIY TUI
 
-you can config PassDIY's password/token/pin char lengths additional confiurations by running config command
+to config custom vaults that are not currently supported by Passdiy all you have to do is edit the interface.go file and define your custom implementation of the functions, then you set `export USE_PASDIY_CUSTOM_VAULT=true` and PassDIY will automatically interface the custom vault
+
+```go
+package extend
+
+var (
+	VAULT_PREFIX           = "pref"
+	VAULT_MAIN_DESC        = "Manage token/password on " + VAULT_PREFIX
+	VAULT_SUBCOMMAND_NAMES = []string{VAULT_PREFIX + "store", VAULT_PREFIX + "list"}
+	VAULT_SUBCOMMAND_DESC  = []string{"store", "lists"}
+	VAULT_DISPLAY_COLOR    = "#E2EAF4"
+)
+
+func ConnectUI() string {
+	return Connect()
+}
+
+func StoreUI(userInput string) string {
+
+	var parser string
+
+	return Create(userInput, parser)
+}
+
+func ListUI() string {
+	return List()
+}
+
+```
 
 
 
