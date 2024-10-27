@@ -2,12 +2,13 @@ package cmds
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/jalpp/passdiy/config"
+	custom "github.com/jalpp/passdiy/extend"
 	hcp "github.com/jalpp/passdiy/hcpvault"
 	opass "github.com/jalpp/passdiy/onepassword"
 	cmd "github.com/jalpp/passdiy/password"
@@ -19,21 +20,35 @@ type CommandItem struct {
 }
 
 var (
-	pwpDesc             = fmt.Sprintf("Generate strong %d-word passphrase", config.PASSPHRASE_COUNT_NUM)
-	saltDesc            = fmt.Sprintf("Generate password with extra %d-char salt on top", config.SALT_EXTRA_LENGTH)
+	pwpDesc             = fmt.Sprintf("Generate strong %d-word passphrase", cmd.PASSPHRASE_COUNT_NUM)
+	saltDesc            = fmt.Sprintf("Generate password with extra %d-char salt on top", cmd.SALT_EXTRA_LENGTH)
 	hashDesc            = "Generate hash value of a password with Argon2id or bcrypthash"
 	argonhashDesc       = "Generate hash value of a password with Argon2id"
 	bcrpthashDesc       = "Generate hash value of a password with bcrypt algorithm"
-	hcpvaultstoreDesc   = "Store a new secret to Hashicorp Vault"
-	hcpvaultconnectDesc = "Generate HCP API token and connect to Hashicorp Vault"
-	hcpvaultlistDesc    = "List HCP Vault secrets log details"
-	opassstoreDesc      = "Store a new secret to 1Password in password format"
-	opasslistDesc       = "List 1Password Vault item names"
+	hcpvaultstoreDesc   = hcp.VAULT_SUBCOMMAND_DESC[1]
+	hcpvaultconnectDesc = hcp.VAULT_SUBCOMMAND_DESC[0]
+	hcpvaultlistDesc    = hcp.VAULT_SUBCOMMAND_DESC[2]
+	opassstoreDesc      = opass.VAULT_SUBCOMMAND_DESC[0]
+	opasslistDesc       = opass.VAULT_SUBCOMMAND_DESC[1]
 	mainpassDesc        = "Generate strong passwords from various algorithms"
 	mainpinDesc         = "Generate strong pins from various algorithms"
 	maintokenDesc       = "Generate strong token from various algorithms"
-	hcpDesc             = "Manage Token/Password on Hashicorp Vault"
-	opassDesc           = "Manage Token/Password on 1Password"
+	hcpDesc             = hcp.VAULT_MAIN_DESC
+	opassDesc           = opass.VAULT_MAIN_DESC
+	configDesc          = "Config PassDIY password, token, pin, salt char lengths"
+)
+
+const cf = cmd.LOTTERY_WHEEL_COUNT
+
+var (
+	configItems = []CommandItem{
+		{title: "configpass", desc: cmd.CONFIG_PASS_DESC},
+		{title: "configtoken", desc: cmd.CONFIG_TOKEN_DESC},
+		{title: "configpin", desc: cmd.CONFIG_PIN_DESC},
+		{title: "configpwp", desc: cmd.CONFIG_PWP_WORD_DESC},
+		{title: "configmul", desc: cmd.CONFIG_MULTI_DESC},
+		{title: "configsalt", desc: cmd.CONFIG_SALT_DESC},
+	}
 )
 
 func (i CommandItem) Title() string       { return i.title }
@@ -44,8 +59,8 @@ func GetSingleCommandInfo(cmd string) string {
 	return fmt.Sprintf("Generate a single %s", cmd)
 }
 
-func GetMulCommandInfo(cmd string) string {
-	return fmt.Sprintf("Generate %d multiple %s all at once", config.MULTIPLE_VALUE_COUNT, cmd)
+func GetMulCommandInfo(cmds string) string {
+	return fmt.Sprintf("Generate %d multiple %s all at once", cmd.MULTIPLE_VALUE_COUNT, cmds)
 }
 
 func GetHundCommandInfo(cmd string) string {
@@ -57,27 +72,26 @@ func GetTenKCommandInfo(cmd string) string {
 }
 
 func CreateCommandItems() []list.Item {
-	const config = config.LOTTERY_WHEEL_COUNT
 
 	passItems := []CommandItem{
 		{title: "pass", desc: GetSingleCommandInfo("strong password")},
 		{title: "passmul", desc: GetMulCommandInfo("password")},
-		{title: fmt.Sprintf("pass%d", config), desc: GetHundCommandInfo("password")},
-		{title: fmt.Sprintf("pass%d", config*config), desc: GetTenKCommandInfo("password")},
+		{title: fmt.Sprintf("pass%d", cf), desc: GetHundCommandInfo("password")},
+		{title: fmt.Sprintf("pass%d", cf*cf), desc: GetTenKCommandInfo("password")},
 	}
 
 	pinItems := []CommandItem{
 		{title: "pin", desc: GetSingleCommandInfo("pin")},
 		{title: "pinmul", desc: GetMulCommandInfo("pin")},
-		{title: fmt.Sprintf("pin%d", config), desc: GetHundCommandInfo("pin")},
-		{title: fmt.Sprintf("pin%d", config*config), desc: GetTenKCommandInfo("pin")},
+		{title: fmt.Sprintf("pin%d", cf), desc: GetHundCommandInfo("pin")},
+		{title: fmt.Sprintf("pin%d", cf*cf), desc: GetTenKCommandInfo("pin")},
 	}
 
 	tokenItems := []CommandItem{
 		{title: "token", desc: GetSingleCommandInfo("token")},
 		{title: "tokenmul", desc: GetMulCommandInfo("token")},
-		{title: fmt.Sprintf("token%d", config), desc: GetHundCommandInfo("token")},
-		{title: fmt.Sprintf("token%d", config*config), desc: GetTenKCommandInfo("token")},
+		{title: fmt.Sprintf("token%d", cf), desc: GetHundCommandInfo("token")},
+		{title: fmt.Sprintf("token%d", cf*cf), desc: GetTenKCommandInfo("token")},
 	}
 	hashItems := []CommandItem{
 		{title: "argonhash", desc: argonhashDesc},
@@ -85,14 +99,34 @@ func CreateCommandItems() []list.Item {
 	}
 
 	hcpItems := []CommandItem{
-		{title: "hcpvaultstore", desc: hcpvaultstoreDesc},
-		{title: "hcpvaultconnect", desc: hcpvaultconnectDesc},
-		{title: "hcpvaultlist", desc: hcpvaultlistDesc},
+		{title: hcp.VAULT_SUBCOMMAND_NAMES[1], desc: hcpvaultstoreDesc},
+		{title: hcp.VAULT_SUBCOMMAND_NAMES[0], desc: hcpvaultconnectDesc},
+		{title: hcp.VAULT_SUBCOMMAND_NAMES[2], desc: hcpvaultlistDesc},
 	}
 
 	opassItems := []CommandItem{
-		{title: "1passstore", desc: opassstoreDesc},
-		{title: "1passlist", desc: opasslistDesc},
+		{title: opass.VAULT_SUBCOMMAND_NAMES[0], desc: opassstoreDesc},
+		{title: opass.VAULT_SUBCOMMAND_NAMES[1], desc: opasslistDesc},
+	}
+
+	customItems := []CommandItem{
+		{title: custom.VAULT_SUBCOMMAND_NAMES[0], desc: custom.VAULT_SUBCOMMAND_DESC[0]},
+		{title: custom.VAULT_SUBCOMMAND_NAMES[1], desc: custom.VAULT_SUBCOMMAND_DESC[1]},
+	}
+
+	if strings.ToLower(os.Getenv("USE_PASDIY_CUSTOM_VAULT")) == "true" {
+		return []list.Item{
+			CommandItem{title: "pass", desc: mainpassDesc, Subcmd: passItems},
+			CommandItem{title: "pin", desc: mainpinDesc, Subcmd: pinItems},
+			CommandItem{title: "token", desc: maintokenDesc, Subcmd: tokenItems},
+			CommandItem{title: "salt", desc: saltDesc},
+			CommandItem{title: "pwp", desc: pwpDesc},
+			CommandItem{title: "config", desc: configDesc, Subcmd: configItems},
+			CommandItem{title: "hash", desc: hashDesc, Subcmd: hashItems},
+			CommandItem{title: hcp.VAULT_PREFIX, desc: hcpDesc, Subcmd: hcpItems},
+			CommandItem{title: opass.VAULT_PREFIX, desc: opassDesc, Subcmd: opassItems},
+			CommandItem{title: custom.VAULT_PREFIX, desc: custom.VAULT_MAIN_DESC, Subcmd: customItems},
+		}
 	}
 
 	return []list.Item{
@@ -101,9 +135,10 @@ func CreateCommandItems() []list.Item {
 		CommandItem{title: "token", desc: maintokenDesc, Subcmd: tokenItems},
 		CommandItem{title: "salt", desc: saltDesc},
 		CommandItem{title: "pwp", desc: pwpDesc},
+		CommandItem{title: "config", desc: configDesc, Subcmd: configItems},
 		CommandItem{title: "hash", desc: hashDesc, Subcmd: hashItems},
-		CommandItem{title: "hcpvault", desc: hcpDesc, Subcmd: hcpItems},
-		CommandItem{title: "1pass", desc: opassDesc, Subcmd: opassItems},
+		CommandItem{title: hcp.VAULT_PREFIX, desc: hcpDesc, Subcmd: hcpItems},
+		CommandItem{title: opass.VAULT_PREFIX, desc: opassDesc, Subcmd: opassItems},
 	}
 }
 
@@ -122,7 +157,7 @@ func ExecuteCommand(command, input string) tea.Cmd {
 }
 
 func HandleCommand(input, userInput string) string {
-	const config = config.LOTTERY_WHEEL_COUNT
+	const config = cmd.LOTTERY_WHEEL_COUNT
 	switch strings.TrimSpace(input) {
 	case "pass":
 		return cmd.GetStrongPassword()
@@ -156,35 +191,32 @@ func HandleCommand(input, userInput string) string {
 		return cmd.HashFunc(userInput)
 	case "bcrypthash":
 		return cmd.BcryptHash(userInput)
-	case "hash":
-		return cmd.HashFunc(userInput)
-	case "hcpvaultstore":
-		parts := strings.SplitN(userInput, "=", 2)
-		if len(parts) == 2 {
-			name := parts[0]
-			value := parts[1]
-			return hcp.Create(name, value)
-		}
-		return "Invalid format. Use 'name=value'."
-	case "hcpvaultconnect":
-		return hcp.Connect()
-	case "hcpvaultlist":
-		var list string = hcp.List()
-		if strings.Contains(list, "Unauthorized") {
-			return "Please connect to Hashicorp vault via hcpvaultconnect"
-		}
-		return list
-	case "1passstore":
-		parts := strings.SplitN(userInput, "|", 3)
-		if len(parts) == 3 {
-			user := parts[0]
-			pass := parts[1]
-			url := parts[2]
-			return opass.Create(user, pass, url)
-		}
-		return "Invalid format. use 'user|value|url'."
-	case "1passlist":
-		return opass.List()
+	case "configpass":
+		return cmd.SetPasswordLength(userInput)
+	case "configtoken":
+		return cmd.SetAPITokenLength(userInput)
+	case "configpin":
+		return cmd.SetPinLength(userInput)
+	case "configpwp":
+		return cmd.SetPwpWordCount(userInput)
+	case "configmul":
+		return cmd.SetMulCount(userInput)
+	case "configsalt":
+		return cmd.SetSaltLength(userInput)
+	case hcp.VAULT_SUBCOMMAND_NAMES[1]:
+		return hcp.StoreUI(userInput)
+	case hcp.VAULT_SUBCOMMAND_NAMES[0]:
+		return hcp.ConnectUI()
+	case hcp.VAULT_SUBCOMMAND_NAMES[2]:
+		return hcp.ListUI()
+	case opass.VAULT_SUBCOMMAND_NAMES[0]:
+		return opass.StoreUI(userInput)
+	case opass.VAULT_SUBCOMMAND_NAMES[1]:
+		return opass.ListUI()
+	case custom.VAULT_SUBCOMMAND_NAMES[0]:
+		return custom.StoreUI(userInput)
+	case custom.VAULT_SUBCOMMAND_NAMES[1]:
+		return custom.ListUI()
 	default:
 		return fmt.Sprintf("Unknown command: %s", input)
 	}
@@ -192,4 +224,16 @@ func HandleCommand(input, userInput string) string {
 
 func CoverUp(pass string) string {
 	return cmd.CoverUp(pass)
+}
+
+func IsConfigCommand(command string) bool {
+	return strings.Contains(command, "config")
+}
+
+func IsHashCommand(command string) bool {
+	return command == "bcrypthash" || command == "argonhash"
+}
+
+func IsCommandInputMode(commandName string) bool {
+	return IsConfigCommand(commandName) || IsHashCommand(commandName) || commandName == "hcpvaultstore" || commandName == "1passstore"
 }
