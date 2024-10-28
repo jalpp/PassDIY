@@ -39,9 +39,6 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 ![passdiydemo6](https://github.com/user-attachments/assets/65fe6b59-2ca2-44f2-bf80-61a9a3f0dfda)
 
-
-
-
 ## Hashicorp Setup
 
 To allow PassDIY to store and connect to your Hashicorp vault you must create a [service principle](https://developer.hashicorp.com/hcp/docs/hcp/iam/service-principal) with ```Vault Secrets App Manager``` permission. Also would need set below envs
