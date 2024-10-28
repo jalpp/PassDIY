@@ -35,12 +35,10 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 - 1passstore store secrets into the vault via name|password|url format
 - 1passwordlist list secret names for connected vault
 
-## Custom Vault
-Don't see a vault you use, but not supported by PassDIY? No worries! write your own vaults driver code in `/extend` within provided functions and set `export USE_PASDIY_CUSTOM_VAULT=true`to connect PassDIY to your vault provider. Read `/extend/README.md`
-
 ## Demo
 
-![passdiydemo4](https://github.com/user-attachments/assets/b26dabb9-96ad-4a68-a742-dfeb4fc604d7)
+![passdiydemo5](https://github.com/user-attachments/assets/ee5435d7-06a6-4bc7-a2a2-730cffdbbda3)
+
 
 
 ## Hashicorp Setup
