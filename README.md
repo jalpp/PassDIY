@@ -37,7 +37,8 @@ Because managing tokens, pins used in various dummy/dev apps require them to be 
 
 ## Demo
 
-![passdiydemo5](https://github.com/user-attachments/assets/ee5435d7-06a6-4bc7-a2a2-730cffdbbda3)
+![passdiydemo6](https://github.com/user-attachments/assets/65fe6b59-2ca2-44f2-bf80-61a9a3f0dfda)
+
 
 
 
