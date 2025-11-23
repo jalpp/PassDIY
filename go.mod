@@ -1,6 +1,6 @@
 module github.com/jalpp/passdiy
 
-go 1.23.2
+go 1.24.0
 
 require (
 	github.com/1password/onepassword-sdk-go v0.1.3
@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.1.1
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/gregoryv/english v0.6.0
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.45.0
 )
 
 require (
@@ -30,7 +30,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sahilm/fuzzy v0.1.1 // indirect
 	github.com/tetratelabs/wazero v1.8.1 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 )
